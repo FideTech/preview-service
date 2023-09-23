@@ -14,6 +14,9 @@ from starlette.responses import (
 from starlette.datastructures import UploadFile
 
 from preview_generator.manager import PreviewManager
+from preview_generator.exception import InputExtensionNotFound
+from preview_generator.exception import UnavailablePreviewType
+from preview_generator.exception import UnsupportedMimeType
 
 
 UPLOAD_DIR = "/tmp/files/"
@@ -63,7 +66,16 @@ async def preview_endpoint(request):
 
     try:
         image = manager.get_jpeg_preview(file_path, width=width, height=height)
+    except UnsupportedMimeType as e:
+        return error_response("Unsupported file type", status.HTTP_400_BAD_REQUEST)
+    except InputExtensionNotFound as e:
+        return error_response("File extension not found", status.HTTP_501_NOT_IMPLEMENTED)
+    except UnavailablePreviewType as e:
+        return error_response("Unable to generate preview", status.HTTP_501_NOT_IMPLEMENTED)
     except Exception as e:
+        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+        message = template.format(type(e).__name__, e.args)
+        print(message)
         return error_response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return FileResponse(image)
