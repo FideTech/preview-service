@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  docker-build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Correct Ref Name
+        uses: mad9000/actions-find-and-replace-string@2
+        id: branchtag
+        with:
+          source: ${{github.ref_name}}
+          find: '/'
+          replace: '-'
+
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          registry: registry.fidetech.io
+          username: ${{ secrets.DOCKERREGISTRY_USERNAME }}
+          password: ${{ secrets.DOCKERREGISTRY_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: |
+            registry.fidetech.io/preview-api:${{github.sha}}
+            registry.fidetech.io/preview-api:${{steps.branchtag.outputs.value}}

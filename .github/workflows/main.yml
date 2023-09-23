@@ -1,0 +1,22 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - Lendiom
+  pull_request:
+    branches:
+      - Lendiom
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t landpro-server .
+
+      - name: Run Docker image
+        run: docker run -d -p 3887:3887 -p 8181:8181 landpro-server
