@@ -34,5 +34,5 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            registry.fidetech.io/preview-api:${{github.sha}}
-            registry.fidetech.io/preview-api:${{steps.branchtag.outputs.value}}
+            registry.fidetech.io/lendiom-preview-service:${{github.sha}}
+            registry.fidetech.io/lendiom-preview-service:${{steps.branchtag.outputs.value}}
