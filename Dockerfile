@@ -1,21 +1,22 @@
-FROM python:3.9-buster
+FROM python:3.9-trixie
 LABEL maintaner="Florian Purchess <florian@attacke.ventures>"
 
 RUN apt-get update && \
+  apt-get upgrade -y && \
   apt-get install -y poppler-utils qpdf libfile-mimeinfo-perl libimage-exiftool-perl ghostscript libsecret-1-0 zlib1g-dev libjpeg-dev \
-  libreoffice inkscape ufraw-batch ffmpeg xvfb \
-  libnotify4 libappindicator3-1 curl \
-  scribus inkscape \
+  libreoffice ffmpeg xvfb \
+  libnotify4 curl \
+  scribus \
   && rm -rf /var/lib/apt/lists/*
 
 ENV DRAWIO_VERSION="12.6.5"
 RUN curl -LO https://github.com/jgraph/drawio-desktop/releases/download/v${DRAWIO_VERSION}/draw.io-amd64-${DRAWIO_VERSION}.deb && \
-  dpkg -i draw.io-amd64-${DRAWIO_VERSION}.deb && \
+  dpkg -i --ignore-depends=libappindicator3-1 draw.io-amd64-${DRAWIO_VERSION}.deb && \
   rm draw.io-amd64-${DRAWIO_VERSION}.deb
 
 WORKDIR /app
 
-RUN pip install pipenv vtk
+RUN pip install pipenv==2023.12.1 vtk
 COPY Pipfile* /app/
 RUN pipenv install --system
 
