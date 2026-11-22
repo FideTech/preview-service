@@ -1,4 +1,4 @@
-FROM python:3.11-trixie
+FROM python:3.11-bookworm
 LABEL maintaner="Florian Purchess <florian@attacke.ventures>"
 
 RUN apt-get update
@@ -22,7 +22,7 @@ RUN LIBHEIF_VERSION="1.12.0" \
     && make -j4 \
     && make install
 
-RUN curl -L https://imagemagick.org/archive/ImageMagick.tar.gz | tar zx \
+RUN curl -L https://download.imagemagick.org/archive/ImageMagick.tar.gz | tar zx \
     && cd ImageMagick*/ \
     && export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
     && export LDFLAGS=-L/usr/local/lib \
@@ -36,13 +36,13 @@ RUN apt-get update && \
   apt-get install -y \
   poppler-utils qpdf libfile-mimeinfo-perl libimage-exiftool-perl ghostscript libsecret-1-0 zlib1g-dev libjpeg-dev \
   libreoffice inkscape ffmpeg xvfb \
-  libnotify4 curl \
+  libnotify4 libappindicator3-1 curl \
   scribus python3-vtk9 \
   && rm -rf /var/lib/apt/lists/*
 
 ENV DRAWIO_VERSION="12.6.5"
 RUN curl -LO https://github.com/jgraph/drawio-desktop/releases/download/v${DRAWIO_VERSION}/draw.io-amd64-${DRAWIO_VERSION}.deb && \
-  dpkg -i --ignore-depends=libappindicator3-1 draw.io-amd64-${DRAWIO_VERSION}.deb && \
+  dpkg -i draw.io-amd64-${DRAWIO_VERSION}.deb && \
   rm draw.io-amd64-${DRAWIO_VERSION}.deb
 
 WORKDIR /app
