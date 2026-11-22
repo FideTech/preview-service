@@ -22,7 +22,7 @@ RUN LIBHEIF_VERSION="1.12.0" \
     && make -j4 \
     && make install
 
-RUN curl -L https://imagemagick.org/archive/ImageMagick.tar.gz | tar zx \
+RUN curl -L https://download.imagemagick.org/archive/ImageMagick.tar.gz | tar zx \
     && cd ImageMagick*/ \
     && export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
     && export LDFLAGS=-L/usr/local/lib \
